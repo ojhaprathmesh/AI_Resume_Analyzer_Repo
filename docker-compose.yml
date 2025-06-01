@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: ./resume_analyzer_web/frontend
+    container_name: resume-analyzer-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=http://backend:3001
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./resume_analyzer_web/backend
+    container_name: resume-analyzer-backend
+    ports:
+      - "3001:3001"
+    depends_on:
+      - ml_service
+    environment:
+      - ML_API_URL=http://ml_service:8000
+    restart: unless-stopped
+
+  ml_service:
+    build:
+      context: ./resume_analyzer_ml
+    container_name: resume-analyzer-ml
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
